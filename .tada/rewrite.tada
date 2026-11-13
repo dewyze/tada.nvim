@@ -1,0 +1,63 @@
+> Tada in Lua: short plans that John and an LLM both write
+- Format:
+  - Lines:
+    - [ ] Topics, todos, list items, notes, comments
+    - [ ] Metadata sigils
+    - [ ] Topics nest 3 deep
+    - [ ] Optional header: one note, links
+  - Todos:
+    - [ ] Four styles: unicode, ascii, simple, markdown
+    - [ ] Custom statuses and symbols
+    - [ ] Custom colors
+  - Dropped:
+    - [⚑] Per-file @config
+    - [⚑] In-file === archive
+          > Archiving moves lines to .tada/archive/
+    - [⚑] Todos under todos
+          > A todo with children is a topic
+- Editing:
+  - Todos:
+    - [ ] <C-Space> toggles a box
+    - [ ] <Space> cycles status
+  - Lines:
+    - [ ] Enter, o, O continue the line type
+    - [ ] Tab indents an empty item
+    - [ ] : | > convert an empty line
+    - [ ] <C-H> clears left of cursor
+  - Movement:
+    - [ ] ( ) jump between topics
+    - [ ] { } jump between parent topics
+    - [ ] Jump from a & link to file:line
+  - Metadata:
+    - [ ] @: completes assignees from a list
+- Folds:
+  - [ ] Enter folds a topic
+  - [ ] <C-T>1-3 fold to a level
+  - [ ] <C-T>0 opens all
+  - [ ] <C-T>o/c open or close under cursor
+  - [ ] Fold text shows todo counts
+- Plans:
+  - Folder:
+    - [ ] Plans live in .tada/
+    - [ ] Root Tadafile still opens
+  - Pane:
+    - [ ] \td opens the last edited plan
+    - [ ] Pick another plan from a list
+    - [ ] Browse archived plans
+  - Archive:
+    - [ ] Archive a whole plan
+    - [ ] Archive selected lines
+          > Appends to the same-named file in archive/
+- LLM:
+  - Skill:
+    - [ ] Reads and writes plans
+    - [ ] Todos are user stories
+    - [ ] Steps only under the active item
+    - [ ] Long notes go in .tada/notes/, linked with &
+    - [ ] Ignores archive/ unless pointed at it
+  - Voice:
+    - [ ] Good and bad example pairs
+    - [ ] Size test for a draft?
+- Release:
+  - [✔] v1.0.0 tag pins the Vimscript version
+  - [ ] README covers the Lua version

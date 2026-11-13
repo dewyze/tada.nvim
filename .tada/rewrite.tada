@@ -17,8 +17,8 @@
           > A todo with children is a topic
 - Editing:
   - Todos:
-    - [ ] <C-Space> toggles a box
-    - [ ] <Space> cycles status
+    - [✔] <C-Space> toggles a box
+    - [✔] <Space> cycles status
   - Lines:
     - [ ] Enter, o, O continue the line type
     - [ ] Tab indents an empty item
@@ -53,7 +53,7 @@
     - [ ] Reads and writes plans
     - [ ] Todos are user stories
     - [ ] Steps only under the active item
-    - [ ] Long notes go in .tada/notes/, linked with &
+    - [ ] Long notes go in .tada/context/, linked with &
     - [ ] Ignores archive/ unless pointed at it
   - Voice:
     - [ ] Good and bad example pairs

@@ -12,4 +12,33 @@ function M.cleanup(path)
   end
 end
 
+-- Open a fresh tada buffer holding the given lines, cursor on the first
+function M.plan(lines)
+  vim.cmd("enew!")
+  vim.bo.buftype = "nofile"
+  vim.bo.filetype = "tada"
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+  vim.api.nvim_win_set_cursor(0, { 1, 0 })
+end
+
+-- Type keys as a user would, mappings included
+function M.press(keys)
+  local codes = vim.api.nvim_replace_termcodes(keys, true, false, true)
+  vim.api.nvim_feedkeys(codes, "mx", false)
+end
+
+function M.lines()
+  return vim.api.nvim_buf_get_lines(0, 0, -1, false)
+end
+
+function M.line()
+  return vim.api.nvim_get_current_line()
+end
+
+-- The text from the cursor to the end of the line
+function M.after_cursor()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  return M.line():sub(col + 1)
+end
+
 return M

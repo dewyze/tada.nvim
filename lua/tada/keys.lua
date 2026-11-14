@@ -25,6 +25,15 @@ local defaults = {
   previous_parent_topic = "{",
   next_parent_topic = "}",
   follow_link = "gf",
+
+  -- under the prefix
+  archive = "a",
+  archive_plan = "A",
+
+  -- everywhere, not only in a plan
+  pane = "<LocalLeader>td",
+  pick = "<LocalLeader>tp",
+  archived = "<LocalLeader>ta",
 }
 
 function Keys.configured()

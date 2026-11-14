@@ -65,21 +65,8 @@ function Topic:tally()
   return tally
 end
 
--- Everything beneath this topic, down to the next entry that sits outside it
-function Topic:entries()
-  local entries = {}
-
-  for row = self.row + 1, self.plan:last_row() do
-    local entry = self.plan:entry_at(row)
-
-    if entry:closes(self) then
-      break
-    end
-
-    table.insert(entries, entry)
-  end
-
-  return entries
+function Topic:is_same_topic_as(entry)
+  return entry.title == self.title and entry.indent == self.indent
 end
 
 return Topic

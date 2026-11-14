@@ -32,6 +32,57 @@ function M.row()
   return vim.api.nvim_win_get_cursor(0)[1]
 end
 
+-- A folder to work in, as the current directory, with every window and buffer closed
+function M.workspace()
+  local dir = vim.uv.fs_realpath(M.temp_dir())
+  vim.cmd("silent! tabnew | silent! tabonly")
+  vim.cmd("silent! %bwipeout!")
+  vim.cmd.cd(dir)
+  return dir
+end
+
+-- Write a plan and say how many minutes ago it was last edited
+function M.write_plan(path, lines, minutes_ago)
+  M.write(path, lines)
+  local edited = os.time() - (minutes_ago or 0) * 60
+  vim.uv.fs_utime(path, edited, edited)
+end
+
+local select, input = vim.ui.select, vim.ui.input
+
+-- Stand in for the picker: choose the item with this label, remembering what was offered
+function M.choose(label)
+  M.offered = {}
+  vim.ui.select = function(items, options, on_choice)
+    local format = options.format_item or tostring
+    local chosen
+
+    for _, item in ipairs(items) do
+      table.insert(M.offered, format(item))
+      if format(item) == label then
+        chosen = item
+      end
+    end
+
+    on_choice(chosen)
+  end
+end
+
+-- Stand in for the prompt: answer with this text
+function M.answer(text)
+  vim.ui.input = function(_, on_confirm)
+    on_confirm(text)
+  end
+end
+
+function M.restore_ui()
+  vim.ui.select, vim.ui.input = select, input
+end
+
+function M.exists(path)
+  return vim.uv.fs_stat(path) ~= nil
+end
+
 -- Open a fresh tada buffer holding the given lines, cursor on the first
 function M.plan(lines)
   vim.cmd("enew!")

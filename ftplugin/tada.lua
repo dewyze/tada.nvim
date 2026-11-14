@@ -53,8 +53,20 @@ ask("n", "next_parent_topic", "Go to the next topic one level up")
 ask("n", "follow_link", "Open what a link points to")
 
 local function under_prefix(key)
-  return keys.prefix and keys.prefix .. key
+  return keys.prefix and key and keys.prefix .. key
 end
+
+map("n", under_prefix(keys.archive), "Archive this entry and everything under it", function()
+  Plan.current():under_cursor():archive()
+end)
+map("x", under_prefix(keys.archive), "Archive the lines selected", function()
+  local selection = Plan.current():selected()
+  vim.cmd.normal({ vim.keycode("<Esc>"), bang = true })
+  selection:archive()
+end)
+map("n", under_prefix(keys.archive_plan), "Archive the whole plan", function()
+  Plan.current():archive()
+end)
 
 map("n", under_prefix("o"), "Open the topics around the cursor", "zO")
 map("n", under_prefix("c"), "Close the topic around the cursor", "zc")
@@ -67,3 +79,11 @@ for level = 1, Outline.levels do
     Plan.current():show_topics_to(level)
   end)
 end
+
+-- A plan started from the picker has no folder until it is first written
+vim.api.nvim_create_autocmd("BufWritePre", {
+  buffer = 0,
+  callback = function(event)
+    vim.fn.mkdir(vim.fs.dirname(event.match), "p")
+  end,
+})

@@ -91,6 +91,11 @@ function Entry:follow_link()
   self:type("gf")
 end
 
+-- Move this entry, and everything beneath it, to the archive
+function Entry:archive()
+  self.plan:selection(self.row, self:last_row()):archive()
+end
+
 -- Enter in normal mode: only a topic folds
 function Entry:toggle_fold()
   self:type("<CR>")
@@ -108,6 +113,55 @@ end
 
 function Entry:depth()
   return #self.indent / #Outline.step
+end
+
+-- Everything beneath this entry, down to the next one that sits outside it.
+-- Blank lines at the end are left out.
+function Entry:entries()
+  local entries, solid = {}, 0
+
+  for row = self.row + 1, self.plan:last_row() do
+    local entry = self.plan:entry_at(row)
+
+    if entry:closes(self) then
+      break
+    end
+
+    table.insert(entries, entry)
+    solid = entry:is_blank() and solid or #entries
+  end
+
+  return vim.list_slice(entries, 1, solid)
+end
+
+function Entry:last_row()
+  return self.row + #self:entries()
+end
+
+-- The topics this entry sits in, outermost first
+function Entry:ancestors()
+  local ancestors, row, depth = {}, self.row, self:owner():depth()
+
+  while depth > 0 do
+    local topic = self.plan:topic_before(row, depth - 1)
+
+    if not topic then
+      break
+    end
+
+    table.insert(ancestors, 1, topic)
+    row, depth = topic.row, topic:depth()
+  end
+
+  return ancestors
+end
+
+function Entry:is_same_topic_as(_)
+  return false
+end
+
+function Entry:is_blank()
+  return false
 end
 
 -- The depth of the topic this entry sits in

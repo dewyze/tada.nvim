@@ -40,15 +40,15 @@
   - [✔] Fold text shows todo counts
 - Plans:
   - Folder:
-    - [ ] Plans live in .tada/
-    - [ ] Root Tadafile still opens
+    - [✔] Plans live in .tada/
+    - [✔] Root Tadafile still opens
   - Pane:
-    - [ ] \td opens the last edited plan
-    - [ ] Pick another plan from a list
-    - [ ] Browse archived plans
+    - [✔] \td opens the last edited plan
+    - [✔] Pick another plan from a list
+    - [✔] Browse archived plans
   - Archive:
-    - [ ] Archive a whole plan
-    - [ ] Archive selected lines
+    - [✔] Archive a whole plan
+    - [✔] Archive selected lines
           > Appends to the same-named file in archive/
 - LLM:
   - Skill:

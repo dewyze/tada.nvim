@@ -25,4 +25,8 @@ function Blank:closes()
   return false
 end
 
+function Blank:is_blank()
+  return true
+end
+
 return Blank

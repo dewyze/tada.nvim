@@ -26,4 +26,8 @@ function Todo:cycle_status()
   self:become(Todo.new(self.indent, self.status:next(), self.text))
 end
 
+function Todo:successor()
+  return require("tada.placeholder").boxed(self.indent)
+end
+
 return Todo

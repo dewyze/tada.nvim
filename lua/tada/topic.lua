@@ -21,4 +21,13 @@ function Topic:toggle_box()
   self:become(require("tada.todo").new(self.indent, Statuses.configured():first(), self.text))
 end
 
+-- Enter and o start an item inside the topic; O starts one beside it
+function Topic:successor()
+  return require("tada.placeholder").bulleted(self.indent .. "  ")
+end
+
+function Topic:predecessor()
+  return require("tada.placeholder").bulleted(self.indent)
+end
+
 return Topic

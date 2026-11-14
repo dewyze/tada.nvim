@@ -21,6 +21,11 @@ function M.plan(lines)
   vim.api.nvim_win_set_cursor(0, { 1, 0 })
 end
 
+-- Put the cursor on a line, at its first column
+function M.go_to(row)
+  vim.api.nvim_win_set_cursor(0, { row, 0 })
+end
+
 -- Type keys as a user would, mappings included
 function M.press(keys)
   local codes = vim.api.nvim_replace_termcodes(keys, true, false, true)

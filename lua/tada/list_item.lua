@@ -21,4 +21,8 @@ function ListItem:toggle_box()
   self:become(require("tada.todo").new(self.indent, Statuses.configured():first(), self.text))
 end
 
+function ListItem:successor()
+  return require("tada.placeholder").bulleted(self.indent)
+end
+
 return ListItem

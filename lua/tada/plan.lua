@@ -14,7 +14,8 @@ function Plan:under_cursor()
 end
 
 function Plan:entry_at(row)
-  local line = vim.api.nvim_buf_get_lines(self.buffer, row - 1, row, false)[1]
+  -- Above the first line and below the last, a plan is blank
+  local line = row > 0 and vim.api.nvim_buf_get_lines(self.buffer, row - 1, row, false)[1] or ""
 
   for _, kind in ipairs(kinds) do
     local entry = kind.read(line)
@@ -29,6 +30,10 @@ end
 
 function Plan:rewrite(row, line)
   vim.api.nvim_buf_set_lines(self.buffer, row - 1, row, false, { line })
+end
+
+function Plan:insert(row, line)
+  vim.api.nvim_buf_set_lines(self.buffer, row - 1, row - 1, false, { line })
 end
 
 return Plan

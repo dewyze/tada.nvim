@@ -7,9 +7,21 @@ function Metadata.new(indent, text)
 end
 
 function Metadata.read(line)
-  local indent, text = line:match("^(%s*)(|.*)$")
+  local indent, text = line:match("^(%s*)|%s*(.+)$")
 
   return indent and Metadata.new(indent, text)
+end
+
+function Metadata:prefix()
+  return self.indent .. "| "
+end
+
+function Metadata:successor()
+  return require("tada.placeholder").for_metadata(self.indent)
+end
+
+function Metadata:owner()
+  return self:above():owner()
 end
 
 return Metadata

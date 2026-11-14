@@ -20,10 +20,10 @@
     - [✔] <C-Space> toggles a box
     - [✔] <Space> cycles status
   - Lines:
-    - [ ] Enter, o, O continue the line type
-    - [ ] Tab indents an empty item
-    - [ ] : | > convert an empty line
-    - [ ] <C-H> clears left of cursor
+    - [✔] Enter, o, O continue the line type
+    - [✔] Tab indents an empty item
+    - [✔] : | > convert an empty line
+    - [✔] <C-H> clears left of cursor
   - Movement:
     - [ ] ( ) jump between topics
     - [ ] { } jump between parent topics

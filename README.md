@@ -6,6 +6,8 @@ Tada is a plain-text format for short plans, and a Neovim plugin for moving
 around in them fast: nested topics, todos with statuses, folds that count
 what's left, and an archive for what's done.
 
+![A plan open in a pane beside the code it describes](assets/screenshot.png)
+
 ```
 > Admins can put item photos in the order they want
 - Admin:

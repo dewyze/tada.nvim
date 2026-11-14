@@ -66,4 +66,4 @@
           > A rule of thumb in the skill, not a check
 - Release:
   - [✔] 1.0.0 tag pins the Vimscript version
-  - [ ] README covers the Lua version
+  - [✔] README covers the Lua version

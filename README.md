@@ -2,412 +2,251 @@
 
 Turn your todos :white_check_mark: into tadas :tada:.
 
-Vim tada is a file syntax and tools for managing a simple todo list including a
-hierarchy and some metadata.
+Tada is a plain-text format for short plans, and a Neovim plugin for moving
+around in them fast: nested topics, todos with statuses, folds that count
+what's left, and an archive for what's done.
 
-![Vim-tada](https://user-images.githubusercontent.com/1312168/156285987-5ffaa526-816a-4e1c-895c-aeaf36951ebe.png)
+```
+> Admins can put item photos in the order they want
+- Admin:
+  - Photos:
+    - [✔] Upload photos
+    - [•] Reorder photos
+          > Order survives a reload
+    - [ ] Remove a photo
+    - [⚑] Bulk upload
+          > Not now, nobody has asked
+- Storefront:
+  - [ ] Photos show in the admin's order
+```
 
-## Features
+Folded, that plan reads:
 
-- Smart keymaps built for speed
-  - Toggle todo states with `<Space>`
-  - Collapse todo's various levels with `<C-T>1` - `<C-T>6`
-  - Collapse topics with `<Enter>`
-- Customizable statuses, symbols, and colors
-- Supports up to 6 levels of nested to-do's
-- Global and file specific configuration
-- Archive collapsible sections
+```
+> Admins can put item photos in the order they want
+❯ Admin: 1[ ], 1[•], 1[✔], 1[⚑]
+❯ Storefront: 1[ ]
+```
 
 ## Motivation
 
-Sometimes on solo projects, I have wanted an organized todo structure. But
-things like GitHub projects, Trello, Jira, etc. are all too complicated.
-Additionally, when it's just me, I wanted to not have to leave my vim editor in
-order to keep track of what I wanted to work on. So...vim-tada!
-
-I may eventually add advanced opt-in functionality with labels, dates, and some
-  GUI-ish features. Or maybe not.
+On solo projects I want an organized list of what I'm doing without leaving my
+editor, and GitHub projects, Trello and Jira are all more than that. These days
+I also plan work with an LLM, which will happily produce a long Markdown
+document nobody wants to read. A tada plan is a format we can both write that
+stays short enough to take in at a glance.
 
 ## Installation
 
-Using your preferred package manager add `dewyze/vim-tada`. For example, with
-[vim-plug](https://github.com/junegunn/vim-plug):
+Requires Neovim 0.10 or later. With [lazy.nvim](https://github.com/folke/lazy.nvim):
 
-```vim
-Plug 'dewyze/vim-tada'
+```lua
+{ "dewyze/vim-tada" }
 ```
 
-## Sections
+Calling `setup` is optional; see [Configuration](#configuration).
 
-1. [Format](#format)
-1. [Topics](#topics)
-1. [Todos](#todos)
-1. [Folds](#folds)
-1. [Metadata](#metadata)
-1. [Archives](#archives)
-1. [Todo Pane](#todo-pane)
-1. [Keymaps](#keymaps)
-1. [Configuration](#configuration)
-1. [File Config](#file-config)
-1. [Contributing](#contributing)
+The earlier Vimscript version, which also runs in Vim, is the `1.0.0` tag:
+
+```vim
+Plug 'dewyze/vim-tada', { 'tag': '1.0.0' }
+```
 
 ## Format
 
-Vim tada will recognize files named `Tadafile` or with the `.tada` extension.
+Files ending in `.tada`, and files named `Tadafile`, are tada plans.
 
-- **Topics**: Start with `-` and end with `:`
-    - This is a topic:
-- **Todo Items**: Start with `- [ ] ` followed by text
-    - [ ] This is a todo item
-- **List Items**: Start with `-` but do not end with `:`
-    - This is a list item
-- **Notes**: Notes start with a `>`
-    > This is a note
-- **Metadata**: Starts with `| ` followed by one of: `[@,^,$,&,#,!,?]` and `:`
-    - This is a topic followed by metadata:
-      | @:alice,bob
-      | ^:2022-04-01
-      | !:High
-- **Comment**: Comments start with a `#`
-    - \# This is a comment
-- **Archive**: Starts with a `=== Archive Title` line, followed by lines
-prefixed with `=`
-    === My Archive
-    = - This is an archived topic:
+| Line | Looks like | Notes |
+|---|---|---|
+| Topic | `- Title:` | Nests up to three deep, two spaces a level |
+| Todo | `- [ ] text` | The box holds a status |
+| List item | `- text` | For things that aren't work to tick off |
+| Note | `> text` | Hangs under the text of the entry it belongs to |
+| Metadata | `\| @:alice` | Hangs under its topic; see below |
+| Comment | `# text` | |
 
-## Topics
+A todo has no children. If it needs them, it's a topic.
 
-Topics are just headers. You can think of them as milestones, epics, or stories.
-Or you can think of them as organizational folders. Or just as `h1`, `h2`, `h3`.
-They are just a way to organize todos and list items. They are indented by one
-`shiftwidth` level. I.e. if your `shiftwidth` is 2, then a one space indent will
-not register as a topic.
+A plan can open with a note saying what it's for and some links, above the
+first topic.
 
-Topics also determine how [folds](#folds) work. See [that section](#folds) for
-more details.
+### Statuses
 
-Topics can also have [metadata](#metadata).
-> Note: Currently metadata does nothing. Eventually I hope for it to allow for
-some advanced features with sorting, displaying info, or developing an
-interactive UI.
+A todo moves through an ordered list of statuses. There are four styles:
 
-## Todos
+| Style | Statuses |
+|---|---|
+| `unicode` (default) | `[ ]` blank, `[•]` in progress, `[✔]` done, `[⚑]` flagged |
+| `ascii` | `[ ]` blank, `[-]` in progress, `[x]` done, `[o]` flagged |
+| `simple` | `[ ]` blank, `[✔]` done |
+| `markdown` | `[ ]` blank, `[x]` done |
 
-Todos are the bread and butter of vim-tada! You can create a todo item by
-pressing `<C-Space>`. It will toggle a box with `- [ ] ` in your line.
+Or define your own; see [Configuration](#configuration).
 
-### Toggling Todos
+### Metadata
 
-![todo](https://user-images.githubusercontent.com/1312168/156286093-6b2e3768-3c54-4b98-8144-c8a212744cf6.gif)
+A metadata line is `| <sigil>:<value>`.
 
-If you want to toggle between todo states:
+| Sigil | Meaning |
+|---|---|
+| `&` | Link: a web address, or `path/to/file.rb:42` |
+| `@` | Assignees |
+| `!` | Priority |
+| `#` | Tags |
+| `^` | Start date |
+| `$` | End date |
+| `?` | Status |
 
-- `<space>`: Toggle between todo item states
+Links can be followed with `gf`. The other sigils are highlighted and
+otherwise do nothing yet.
 
-### Configuring Todos
+## Keys
 
-You can configure todo statuses and symbols.
+All of these apply only in a tada file, and all can be moved or turned off.
 
-#### Todo Style
+### Editing
 
-A todo style is a predetermined set of statuses and symbols:
+| Key | Mode | Does |
+|---|---|---|
+| `<C-Space>` | normal, insert | Adds or removes the box on a line |
+| `<Space>` | normal | Moves a todo to its next status |
+| `<CR>`, `o`, `O` | insert, normal | Carry on with the same kind of line: a new box after a todo, a bullet inside a topic |
+| `<CR>` on an empty bullet or box | insert | Clears the line, ending the list |
+| `<Tab>`, `<S-Tab>` | insert | Indent or outdent an empty bullet or box |
+| `:` on an empty bullet or box | insert | Steps it out a level, ready for a topic title |
+| `>` on an empty bullet or box | insert | Turns it into a note |
+| `\|` on an empty bullet or box | insert | Turns it into metadata |
+| `<C-H>` | insert | Blanks out everything left of the cursor, so the text continues the line above |
 
-- `unicode` (default): `blank: [ ], in_progress: [•], done: [✔], flagged: [⚑]`
-- `ascii` (default): `blank: [ ], in_progress: [-], done: [x], flagged: [o]`
-- `simple` (default): `blank: [ ], done: [✔]`
-- `markdown` (default): `blank: [ ], done: [x]`
+### Folds
 
-You can just set the style and these will be the todo states.
+| Key | Does |
+|---|---|
+| `<CR>` | Opens or closes the topic under the cursor |
+| `<C-T>1` to `<C-T>3` | Shows topics down to that level |
+| `<C-T>0` | Shows everything |
+| `<C-T>o`, `<C-T>c` | Opens or closes the topic around the cursor |
 
-```vim
-let g:tada_todo_styles = 'ascii'
+A closed topic shows its title and a count of the todos beneath it by status.
+
+### Moving
+
+| Key | Does |
+|---|---|
+| `(`, `)` | Previous or next topic at this level or above |
+| `{`, `}` | Previous or next topic one level up |
+| `gf` | On a link, opens the file at its line, or the web address |
+
+## Plans
+
+A project keeps its plans in a `.tada/` folder, one file per plan:
+
+```
+.tada/
+  photo-order.tada
+  checkout.tada
+  archive/
+    photo-order.tada
 ```
 
-Or via [file specific configs](#file-config):
+A `Tadafile` in the project root also counts as a plan.
 
-```vim
-@config.todo_style = 'ascii'
-```
+| Key | Command | Does |
+|---|---|---|
+| `<LocalLeader>td` | `:Tada` | Opens the plan edited last in a side pane, or closes the pane |
+| `<LocalLeader>tp` | `:Tada pick` | Picks a plan, or starts a new one |
+| `<LocalLeader>ta` | `:Tada archived` | Picks an archived plan |
+| | `:Tada new <name>` | Starts a plan |
 
-#### Todo Statuses and Symbols
+These work from any buffer. With no plans yet, `<LocalLeader>td` asks for a
+name and starts one.
 
-You can set the todo statuses to anything you want, and the symbols as well.
+### Archiving
 
-Via global config in a vimrc:
+| Key | Command | Does |
+|---|---|---|
+| `<C-T>a` | `:Tada archive` | Archives the entry under the cursor and everything beneath it |
+| `<C-T>a` (visual) | `:'<,'>Tada archive` | Archives the selected lines |
+| `<C-T>A` | `:Tada archive-plan` | Archives the whole plan and removes it, after asking |
 
-```vim
-let g:tada_todo_statuses = ['planned', 'doing', 'complete']
-let g:tada_todo_symbols = {'planned': ' ' , 'doing': '🛠️', 'complete': '✅' }
-```
-
-Or via a [file specific configs](#file-config):
-
-```vim
-@config.todo_statuses = ['planned', 'doing', 'complete']
-@config.todo_symbols = {'planned': ' ' , 'doing': '🛠️', 'complete': '✅' }
-```
-
-**NOTE:** For now, the status names are not visible and serve no purpose. I
-think eventually they may be displayed or used in a some UI elements.
-**NOTE:** The first status in the array is considered the "default" for new todo
-items.
-
-## Folds
-
-![Folding](https://user-images.githubusercontent.com/1312168/156286175-acaf53dc-1132-4897-997b-c5181bc6bf0d.gif)
-
-You can fold topics basic on the indent level of the topic. There are several
-shortcuts you can use:
-
-- `<Enter>` in insert mode will, if on a topic, will collapse that topic.
-- `<C-T>#` where `#` is a number `1-6` will fold to various topic levels.
-- `<C-T>0` will unfold everything except an archive.
-- `<C-T>o` will completely open all folds for the topic under the cursor.
-- `<C-T>c` will close all folds for the line under the cursor.
-
-These are just shortcuts on top of some existing vim fold commands, so if you
-know the vim fold commands, feel free to use those.
-
-## Metadata
-
-:construction::construction: **UNDER CONSTRUCTION** :construction::construction:
-
-For now, metadata does nothing. Eventually it can/will be used to add some
-advanced functionality for sorting, shortcuts, or an advanced UI.
-
-### Metadata fields
-
-Metadata syntax is `| <sym>:<val>`
-
-Possible symbols are:
-- `?`: Status
-- `@`: Assignees (comma separated)
-- `^`: Start date (YYYY-MM-DD)
-- `$`: End date (YYYY-MM-DD)
-- `&`: External Link
-- `#`: Tags
-- `!`: Priority
-
-## Archives
-
-If you complete a top level topic (or any topic) you can move it to an "archive"
-which is fancy for a folded section at the bottom of the file.
-
-Highlight the lines you want to archive and type `<C-T>a`.
-
-This will move the lines to the bottom of the file, and add an archive header
-`===` if an archive does not exist.
-
-**NOTE:** This does not change indentation, which is why I recommend only
-archiving top level topics.
-
-The archive will stay closed at all fold levels, but can be toggled open with
-`<Enter>`.
-
-## Todo Pane
-
-You can quickly open a specified tada file with the pane open command.
-
-`<LocalLeader>td` will open the `Tadafile` in a vertical split on the right.
-This is the only tada command available outside of editing a tada file.
-
-### Todo Pane Configuration
-
-#### `g:tada_todo_pane_file`
-
-**Default:** `Tadafile`
-
-Set the file that is opened by the tada todo pane. Another option could be
-`todo.tada` or anything that meets the [format](#format) extension.
-
-#### `g:tada_todo_pane_location`
-
-**Default:** `right`
-
-Set the location for the tada todo pane.
-Acceptable values: `left, top, right, bottom`
-
-#### `g:tada_todo_pane_map`
-
-**Default:** `<LocalLeader>td`
-
-Set the global keymap for opening a tada side pane.
-
-#### `g:tada_todo_pane_size`
-
-**Default:** `min([round(&columns * 0.33), 60])` (33% width of vim, or 60
-columns whichever is the minimum).
-
-Set the size for a tada side pane. Can be a number or a calculation.
-
-## Keymaps
-
-The following maps are present in tada specific files:
-
-#### Insert Mode
-- `<C-Space>`: to toggle adding/removing a todo box `- [ ]`
-- `<C-H>`: to clear anything to the left of the cursor
-- `:`: on an empty line to dedent to a topic
-- `|`: on an empty line to convert it to metadata
-- `>`: on an empty line to convert it to a note
-
-#### Normal Mode
-- `<C-Space>` to toggle adding/removing a todo box `- [ ]`
-- `(` Goes to the previous topic
-- `)` Goes to the next topic
-- `{` Goes to the previous parent topic
-- `}` Goes to the next parent topic
+Archived lines move to the file of the same name in `.tada/archive/`, under
+the titles of the topics they sat in. Both files are saved straight away.
 
 ## Configuration
 
-Vim tada has a variety of configuration options below is a list of them all:
+Everything is optional. These are the defaults:
 
-#### Configuring Todo Styles
+```lua
+require("tada").setup({
+  style = "unicode", -- or "ascii", "simple", "markdown"
 
-See [todo styles](#todo-style) for information on using pre-defined todo styles.
+  pane = {
+    side = "right", -- or "left", "top", "bottom"
+    size = nil, -- a number, or a function returning one; a third of the screen, up to 60 columns
+  },
 
+  keys = {
+    toggle_box = "<C-Space>",
+    cycle_status = "<Space>",
+    clear_marker = "<C-H>",
+    prefix = "<C-T>", -- for the fold and archive keys
 
-#### Configuring Todo Statuses and Symbols
-See [configuring todos](#configuring-todos) for information on configuring todo
-statuses and symbols.
+    pane = "<LocalLeader>td",
+    pick = "<LocalLeader>tp",
+    archived = "<LocalLeader>ta",
+  },
 
-#### `g:tada_autolines`
-
-**Default:** `1`
-
-By default, when pressing `<Enter>`, `o`, or `O`, automatically insert the same
-leading characters.
-
-#### `g:tada_count_nested_todos`
-
-**Default:** `1`
-
-By default, when using [folds](#folds), the summary line will sum todo items
-from children. If you are on a slower machine, this could be slow. Set this to 0
-to turn this feature off.
-
-#### `g:tada_goto_maps`
-
-**Default:** `1`
-
-This determines whether `(`,`)`,`{`,`}` are remapped in normal mode.
-
-#### `g:tada_map_box`
-
-**Default:** `<C-Space>`
-
-For both normal and insert mode, this will toggle a box `- [ ] ` on a line.
-
-#### `g:tada_map_empty_line`
-
-**Default:** `<C-H>`
-
-In insert mode, this will clear everything to the left of the cursor.
-
-#### `g:tada_map_prefix`
-
-**Default:** `<C-T>`
-
-For folds and archives (and future features) this is the map prefix used.
-
-#### `g:tada_no_map`
-
-**Default:** `0`
-
-Use this to turn off all the mappings for `<Space>`, `<C-T>`, `<C-Space>`, `<C-H>`.
-
-#### `g:tada_smart_tab`
-
-**Default:** `1`
-
-By default, `<Tab>` will indent list/todo items if they are empty.
-
-#### `g:tada_todo_switch_status_mapping`
-
-**Default:** `<Space>`
-
-Set the mapping to toggle between todo states.
-
-### Colors
-
-You can configure the colors by overriding any of the following keys.
-
-A color must be one of the following:
-
-- A hex string beginning with `#` (for terminals that support `guifg`)
-- An integer (for terminals using `ctermfg`)
-- An array with [`<gui hex>`, `<cterm int>`]
-
-**NOTE:** if you override the todo key, you need to define all of the colors.
-
-```vim
-let red = ["#cc6666", 168]
-let orange = ["#de935f", 173]
-let yellow = ["#f0c674", 180]
-let canary = ["#bfbc91", 179]
-let green = ["#84b97c", 108]
-let jade = ["#4bb1a7", 73]
-let blue = ["#81a2be", 80]
-let royal = ["#648cb4", 74]
-let purple = ["#b294bb", 140]
-let gray = ["#969896", 245]
-let white = ["#ffffff", 255]
-
-let g:tada_colors = {
-\   "archive": gray,
-\   "comment": gray,
-\   "invalid_config": red,
-\   "metadata": jade,
-\   "note": canary,
-\   "todo": {
-\     "in_progress": yellow,
-\     "done": green,
-\     "flagged": red,
-\   },
-\   "topic": {
-\     "1": purple,
-\     "2": royal,
-\     "3": orange,
-\     "4": purple,
-\     "5": royal,
-\     "6": orange,
-\   },
-\ }
+  colors = {
+    topic = { "#b294bb", "#648cb4", "#de935f" }, -- one per level
+    note = "#bfbc91",
+    metadata = "#4bb1a7",
+    comment = "#969896",
+    todo = {
+      in_progress = "#f0c674",
+      done = "#84b97c",
+      flagged = "#cc6666",
+    },
+  },
+})
 ```
 
-## File Config
+Set any key to `false` to turn it off. The other keys can be set the same way:
+`continue`, `open_below`, `open_above`, `indent_more`, `indent_less`,
+`start_topic`, `start_note`, `start_metadata`, `toggle_fold`, `previous_topic`,
+`next_topic`, `previous_parent_topic`, `next_parent_topic`, `follow_link`,
+`archive` and `archive_plan`.
 
-Sometimes you may want different statuses or symbols for a specific file. (Maybe
-the file is more complex or simple than your typical file). You can set file
-specific configurations. You can put this anywhere in your file.
+A color is a hex string or the name of a highlight group to follow, such as
+`"Comment"`.
 
-**NOTE:** These must be one line long, they are not parsed if they are multiple
-lines.
+To use your own statuses in place of a style, list them in order. The first is
+where a new todo starts:
 
-```vim
-# proj.tada
-@config.todo_statuses = ['blank', 'done']
-@config.todo_symbols = { 'blank': ' ', 'done': 'D' }
+```lua
+require("tada").setup({
+  statuses = {
+    { name = "planned", symbol = " " },
+    { name = "doing", symbol = "🛠️", color = "#f0c674" },
+    { name = "complete", symbol = "✅", color = "#84b97c" },
+  },
+})
 ```
 
-Available settings:
-- `@config.todo_stasuses`: Array of strings
-- `@config.todo_symbols`: Hash with statuses as keys
-- `@config.todo_style`: One of: `unicode`, `ascii`, `markdown`, `simple`
-- `@config.colors`: Hash with string keys and hex/int/array colors. See
-[colors](#colors)
+## Planning with Claude
+
+`skills/tada` is a [Claude Code](https://claude.com/claude-code) skill that
+teaches Claude to read and write tada plans: outcomes over implementation
+steps, short phrases, and long notes kept out of the plan in `.tada/context/`.
+To install it, link it into your skills folder:
+
+```
+ln -s /path/to/vim-tada/skills/tada ~/.claude/skills/tada
+```
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-### Improvements
-
-See the final sections of the [proj.tada](proj.tada):
-
-- Fancy Todo Lists
-- Project Collaboration
-- UI Based
+See [CONTRIBUTING.md](CONTRIBUTING.md). Tests run in headless Neovim with
+`bin/test`.
 
 ## [Code of Conduct](CODE_OF_CONDUCT.md)
 

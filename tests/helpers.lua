@@ -57,11 +57,19 @@ function M.shown()
   return shown
 end
 
--- The name of the highlight on the first character of a line's text
-function M.highlight(row)
-  local col = vim.fn.indent(row) + 1
+-- The name of the highlight on a word in a line, or on the line's first character
+function M.highlight(row, word)
+  local line = vim.fn.getline(row)
+  local col = word and line:find(word, 1, true) or vim.fn.indent(row) + 1
 
   return vim.fn.synIDattr(vim.fn.synID(row, col, 1), "name")
+end
+
+-- The colour, or the linked group, a highlight is painted with
+function M.colour(group)
+  local highlight = vim.api.nvim_get_hl(0, { name = group })
+
+  return highlight.link or (highlight.fg and string.format("#%06x", highlight.fg))
 end
 
 -- The text from the cursor to the end of the line

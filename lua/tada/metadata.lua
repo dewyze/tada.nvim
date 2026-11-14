@@ -1,15 +1,29 @@
+-- A fact about the topic above it: a sigil that says which fact, and its value
 local Entry = require("tada.entry")
 
 local Metadata = Entry.extend()
 
-function Metadata.new(indent, text)
-  return setmetatable({ indent = indent, text = text }, Metadata)
+Metadata.sigils = {
+  ["?"] = "status",
+  ["@"] = "assignees",
+  ["^"] = "start_date",
+  ["$"] = "end_date",
+  ["&"] = "link",
+  ["#"] = "tags",
+  ["!"] = "priority",
+}
+
+function Metadata.new(indent, sigil, value)
+  local metadata = { indent = indent, sigil = sigil, value = value, text = sigil .. ":" .. value }
+  metadata.name = Metadata.sigils[sigil]
+
+  return setmetatable(metadata, Metadata)
 end
 
 function Metadata.read(line)
-  local indent, text = line:match("^(%s*)|%s*(.+)$")
+  local indent, sigil, value = line:match("^(%s*)|%s*(.):(.*)$")
 
-  return indent and Metadata.new(indent, text)
+  return Metadata.sigils[sigil] and Metadata.new(indent, sigil, value)
 end
 
 function Metadata:prefix()

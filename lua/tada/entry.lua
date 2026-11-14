@@ -2,6 +2,8 @@
 -- and the ability to become another kind. A kind answers the keys it cares
 -- about and inherits the plain behaviour for the rest: nothing happens, or
 -- the key types itself.
+local Outline = require("tada.outline")
+
 local Entry = {}
 Entry.__index = Entry
 
@@ -70,9 +72,9 @@ function Entry:toggle_fold()
   self:type("<CR>")
 end
 
--- How many topics deep this entry sits; topics nest at most three deep
+-- How many topics deep this entry sits, as far as topics nest
 function Entry:fold_level()
-  return math.min(self:depth(), 3)
+  return math.min(self:depth(), Outline.levels)
 end
 
 -- What a closed fold starting here shows
@@ -81,7 +83,7 @@ function Entry:summary()
 end
 
 function Entry:depth()
-  return #self.indent / 2
+  return #self.indent / #Outline.step
 end
 
 -- Whether this entry sits outside a topic that started above it

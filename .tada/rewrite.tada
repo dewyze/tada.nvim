@@ -1,14 +1,14 @@
 > Tada in Lua: short plans that John and an LLM both write
 - Format:
   - Lines:
-    - [ ] Topics, todos, list items, notes, comments
-    - [ ] Metadata sigils
+    - [✔] Topics, todos, list items, notes, comments
+    - [✔] Metadata sigils
     - [✔] Topics nest 3 deep
-    - [ ] Optional header: one note, links
+    - [✔] Optional header: one note, links
   - Todos:
-    - [ ] Four styles: unicode, ascii, simple, markdown
-    - [ ] Custom statuses and symbols
-    - [ ] Custom colors
+    - [✔] Four styles: unicode, ascii, simple, markdown
+    - [✔] Custom statuses and symbols
+    - [✔] Custom colors
   - Dropped:
     - [⚑] Per-file @config
     - [⚑] In-file === archive
@@ -30,6 +30,8 @@
     - [ ] Jump from a & link to file:line
   - Metadata:
     - [ ] @: completes assignees from a list
+  - Keys:
+    - [✔] Move a key or turn it off
 - Folds:
   - [✔] Enter folds a topic
   - [✔] <C-T>1-3 fold to a level

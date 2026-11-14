@@ -1,4 +1,5 @@
 local Entry = require("tada.entry")
+local Outline = require("tada.outline")
 local Statuses = require("tada.statuses")
 local Tally = require("tada.tally")
 
@@ -8,13 +9,11 @@ function Topic.new(indent, title)
   return setmetatable({ indent = indent, title = title, text = title .. ":" }, Topic)
 end
 
--- Topics nest three deep. A title indented further is not a topic.
-local deepest = "    "
-
+-- Topics only nest so deep. A title indented further is not a topic.
 function Topic.read(line)
   local indent, title = line:match("^(%s*)%-%s+(.+):$")
 
-  return indent and #indent <= #deepest and Topic.new(indent, title)
+  return indent and #indent / #Outline.step < Outline.levels and Topic.new(indent, title)
 end
 
 function Topic:prefix()
@@ -27,7 +26,7 @@ end
 
 -- Enter and o start an item inside the topic; O starts one beside it
 function Topic:successor()
-  return require("tada.placeholder").bulleted(self.indent .. "  ")
+  return require("tada.placeholder").bulleted(self.indent .. Outline.step)
 end
 
 function Topic:predecessor()

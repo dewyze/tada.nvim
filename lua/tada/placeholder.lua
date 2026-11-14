@@ -6,7 +6,7 @@ local Statuses = require("tada.statuses")
 
 local Placeholder = Entry.extend()
 
-local step = "  "
+local step = require("tada.outline").step
 
 local function new(indent, marker, fields)
   local placeholder = vim.tbl_extend("force", { indent = indent, marker = marker }, fields or {})

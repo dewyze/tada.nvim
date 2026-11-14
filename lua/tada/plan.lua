@@ -1,6 +1,7 @@
 -- One tada file, open in a buffer. Entries are read from the buffer's text
 -- each time they are asked for, so there is no second copy to fall out of step.
 local kinds = require("tada.kinds")
+local Outline = require("tada.outline")
 
 local Plan = {}
 Plan.__index = Plan
@@ -32,9 +33,14 @@ function Plan:last_row()
   return vim.api.nvim_buf_line_count(self.buffer)
 end
 
--- Close every topic below the given depth; 0 opens them all
-function Plan:show_topics_to(depth)
-  vim.wo.foldlevel = depth == 0 and 3 or depth - 1
+-- Close every topic below the given level
+function Plan:show_topics_to(level)
+  vim.wo.foldlevel = level - 1
+  vim.cmd("normal! zX")
+end
+
+function Plan:show_everything()
+  vim.wo.foldlevel = Outline.levels
   vim.cmd("normal! zX")
 end
 

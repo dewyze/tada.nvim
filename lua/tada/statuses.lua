@@ -8,6 +8,11 @@ function Status:box()
   return "[" .. self.symbol .. "]"
 end
 
+-- The highlight group its todos are painted with: "in_progress" is tadaTodoInProgress
+function Status:highlight()
+  return "tadaTodo" .. self.name:gsub("^%l", string.upper):gsub("_(%l)", string.upper)
+end
+
 function Status:next()
   return self.statuses:after(self)
 end

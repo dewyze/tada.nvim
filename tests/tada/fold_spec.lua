@@ -80,6 +80,14 @@ describe("folds", function()
     assert.same(shopping, helpers.shown())
   end)
 
+  it("leaves a header above the first topic in view", function()
+    helpers.plan({ "> Weekend errands", "| &:https://example.com/errands", "- Shop:", "  - [ ] milk" })
+
+    helpers.press("<C-T>1")
+
+    assert.same({ "> Weekend errands", "| &:https://example.com/errands", "❯ Shop: 1[ ]" }, helpers.shown())
+  end)
+
   it("shows a topic with no todos by its title alone", function()
     helpers.plan({ "- Ideas:", "  - a thought" })
 
@@ -110,10 +118,10 @@ describe("a topic nested four deep", function()
   end)
 
   it("is marked as too deep", function()
-    assert.equals("tadaTooDeep", helpers.highlight(4))
+    assert.equals("tadaTooDeep", helpers.highlight(4, "Four"))
   end)
 
   it("leaves a third-level topic unmarked", function()
-    assert.is_not.equals("tadaTooDeep", helpers.highlight(3))
+    assert.is_not.equals("tadaTooDeep", helpers.highlight(3, "Three"))
   end)
 end)

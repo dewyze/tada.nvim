@@ -82,6 +82,16 @@ function Placeholder:indent_less()
   self:become(self:at(self.indent:sub(#step + 1)))
 end
 
+-- Saving often strips the space after the marker. The first character typed
+-- at the end of such a line brings the space back with it.
+function Placeholder:typing(character)
+  local line = vim.api.nvim_get_current_line()
+  local at_end = vim.api.nvim_win_get_cursor(0)[2] == #line
+  local space_lost = #line < #self:render()
+
+  return at_end and space_lost and character ~= " " and " " .. character or character
+end
+
 -- Enter on an empty marker ends the list
 function Placeholder:continue()
   self.plan:rewrite(self.row, "")

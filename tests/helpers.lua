@@ -104,8 +104,8 @@ function M.press(keys)
   vim.api.nvim_feedkeys(codes, "mx", false)
 end
 
--- Keys for typing text one character at a time. Neovim tells plugins about
--- each change as a person types, but not for keys fed in a batch, so say so here.
+-- Keys for typing text one character at a time, as a person does. Keys fed in
+-- a batch are inserted together, and Neovim does not announce each change.
 function M.typed(text)
   return (text:gsub(".", "%0<Cmd>doautocmd <nomodeline> TextChangedI<CR>"))
 end

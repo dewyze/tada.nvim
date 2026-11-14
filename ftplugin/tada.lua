@@ -1,3 +1,8 @@
+if vim.b.did_ftplugin then
+  return
+end
+vim.b.did_ftplugin = true
+
 local Keys = require("tada.keys")
 local Outline = require("tada.outline")
 local Plan = require("tada.plan")
@@ -16,6 +21,10 @@ vim.wo[0][0].foldlevel = Outline.levels
 vim.wo[0][0].fillchars = "fold: "
 
 local keys = Keys.configured()
+
+-- One group per buffer, cleared each time, so that becoming a plan twice
+-- (after :edit, say) does not leave two of each autocmd behind
+local group = vim.api.nvim_create_augroup("tada_plan_" .. vim.api.nvim_get_current_buf(), { clear = true })
 
 -- An action can sit on one key, on several, or on none
 local function map(modes, key, desc, action)
@@ -103,6 +112,7 @@ end)
 
 -- A plan started from the picker has no folder until it is first written
 vim.api.nvim_create_autocmd("BufWritePre", {
+  group = group,
   buffer = 0,
   callback = function(event)
     vim.fn.mkdir(vim.fs.dirname(event.match), "p")
@@ -115,8 +125,17 @@ pcall(function()
 end)
 
 vim.api.nvim_create_autocmd("TextChangedI", {
+  group = group,
   buffer = 0,
   callback = function()
     Plan.current():under_cursor():suggest()
+  end,
+})
+
+vim.api.nvim_create_autocmd("InsertCharPre", {
+  group = group,
+  buffer = 0,
+  callback = function()
+    vim.v.char = Plan.current():under_cursor():typing(vim.v.char)
   end,
 })

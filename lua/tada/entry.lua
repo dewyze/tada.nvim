@@ -96,6 +96,12 @@ function Entry:archive()
   self.plan:selection(self.row, self:last_row()):archive()
 end
 
+-- What a typed character puts in the line: itself, except on a marker that
+-- has lost its trailing space
+function Entry:typing(character)
+  return character
+end
+
 -- After each change while typing: only a line of assignees has names to offer
 function Entry:suggest() end
 

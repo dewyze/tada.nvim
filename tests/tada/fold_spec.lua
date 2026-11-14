@@ -14,8 +14,17 @@ describe("folds", function()
   }
 
   before_each(function()
+    require("tada").setup({ keys = { levels = "<C-T>", open_topic = { "<C-T>o", "<C-T>O" }, close_topic = "<C-T>c" } })
+    helpers.plan(shopping)
+  end)
+
+  it("has no level keys until they are given, leaving Vim's own to work", function()
     require("tada").setup({})
     helpers.plan(shopping)
+
+    helpers.press("zM")
+
+    assert.same({ { "❯ Shop: 2[ ], 1[✔]", "❯ Home: 1[•]" }, "" }, { helpers.shown(), vim.fn.maparg("<C-T>1", "n") })
   end)
 
   it("<C-T>1 shows only the top topics, with their todos counted", function()
@@ -69,12 +78,12 @@ describe("folds", function()
     assert.equals("    - [✔] eggs", helpers.line())
   end)
 
-  it("<C-T>c closes the topic around the cursor and <C-T>o opens it", function()
+  it("can have keys that close the topic around the cursor and open it fully", function()
     helpers.go_to(3)
 
     helpers.press("<C-T>c")
     local closed = helpers.shown()
-    helpers.press("<C-T>o")
+    helpers.press("<C-T>O")
 
     assert.same("  ❯ Food: 1[ ], 1[✔]", closed[2])
     assert.same(shopping, helpers.shown())
@@ -99,6 +108,7 @@ end)
 
 describe("a topic nested four deep", function()
   before_each(function()
+    require("tada").setup({ keys = { levels = "<C-T>" } })
     helpers.plan({
       "- One:",
       "  - Two:",

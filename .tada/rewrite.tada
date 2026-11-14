@@ -34,10 +34,10 @@
     - [✔] Move a key or turn it off
 - Folds:
   - [✔] Enter folds a topic
-  - [✔] <C-T>1-3 fold to a level
-  - [✔] <C-T>0 opens all
-  - [✔] <C-T>o/c open or close under cursor
   - [✔] Fold text shows todo counts
+  - [✔] Level keys, once given a key
+  - [⚑] Default keys for levels, open, close
+        > Vim's zM zR zm zr zO zc already do it
 - Plans:
   - Folder:
     - [✔] Plans live in .tada/
@@ -51,6 +51,8 @@
     - [✔] Archive selected lines
           > Appends to the same-named file in archive/
     - [✔] Confirm before archiving a whole plan
+    - [⚑] Default keys for archiving and picking
+          > Commands by default; keys are there to set
   - Commands:
     - [✔] :Tada does what the keys do
 - LLM:
@@ -65,5 +67,6 @@
     - [⚑] Size test for a draft?
           > A rule of thumb in the skill, not a check
 - Release:
-  - [✔] 1.0.0 tag pins the Vimscript version
+  - [⚑] 1.0.0 tag pins the Vimscript version
+        > Removed; no 1.0.0 until this has been used
   - [✔] README covers the Lua version

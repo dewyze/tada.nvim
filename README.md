@@ -46,10 +46,10 @@ Requires Neovim 0.11 or later. With [lazy.nvim](https://github.com/folke/lazy.nv
 
 Calling `setup` is optional; see [Configuration](#configuration).
 
-The earlier Vimscript version, which also runs in Vim, is the `1.0.0` tag:
+The earlier Vimscript version, which also runs in Vim, ends at commit `625ad42`:
 
 ```vim
-Plug 'dewyze/vim-tada', { 'tag': '1.0.0' }
+Plug 'dewyze/vim-tada', { 'commit': '625ad42' }
 ```
 
 ## Format
@@ -122,14 +122,17 @@ All of these apply only in a tada file, and all can be moved or turned off.
 
 ### Folds
 
+A plan folds by topic, and a closed topic shows its title and a count of the
+todos beneath it by status. `<CR>` opens or closes the topic under the cursor.
+The rest is Vim's own fold keys:
+
 | Key | Does |
 |---|---|
-| `<CR>` | Opens or closes the topic under the cursor |
-| `<C-T>1` to `<C-T>3` | Shows topics down to that level |
-| `<C-T>0` | Shows everything |
-| `<C-T>o`, `<C-T>c` | Opens or closes the topic around the cursor |
+| `zM`, `zR` | Shows only the top topics, or everything |
+| `zm`, `zr` | Folds one level more, or one level less |
+| `zO`, `zc` | Opens the topic under the cursor fully, or closes it |
 
-A closed topic shows its title and a count of the todos beneath it by status.
+If you'd like a key per level, see `levels` in [Configuration](#configuration).
 
 ### Moving
 
@@ -153,26 +156,29 @@ A project keeps its plans in a `.tada/` folder, one file per plan:
 
 A `Tadafile` in the project root also counts as a plan.
 
-| Key | Command | Does |
-|---|---|---|
-| `<LocalLeader>td` | `:Tada` | Opens the plan edited last in a side pane, or closes the pane |
-| `<LocalLeader>tp` | `:Tada pick` | Picks a plan, or starts a new one |
-| `<LocalLeader>ta` | `:Tada archived` | Picks an archived plan |
-| | `:Tada new <name>` | Starts a plan |
+| Command | Does |
+|---|---|
+| `:Tada` | Opens the plan edited last in a side pane, or closes the pane |
+| `:Tada pick` | Picks a plan, or starts a new one |
+| `:Tada archived` | Picks an archived plan |
+| `:Tada new <name>` | Starts a plan |
 
-These work from any buffer. With no plans yet, `<LocalLeader>td` asks for a
-name and starts one.
+`<LocalLeader>td` does the same as `:Tada`, from any buffer. With no plans
+yet, it asks for a name and starts one.
 
 ### Archiving
 
-| Key | Command | Does |
-|---|---|---|
-| `<C-T>a` | `:Tada archive` | Archives the entry under the cursor and everything beneath it |
-| `<C-T>a` (visual) | `:'<,'>Tada archive` | Archives the selected lines |
-| `<C-T>A` | `:Tada archive-plan` | Archives the whole plan and removes it, after asking |
+| Command | Does |
+|---|---|
+| `:Tada archive` | Archives the entry under the cursor and everything beneath it |
+| `:'<,'>Tada archive` | Archives the selected lines |
+| `:Tada archive-plan` | Archives the whole plan and removes it, after asking |
 
 Archived lines move to the file of the same name in `.tada/archive/`, under
 the titles of the topics they sat in. Both files are saved straight away.
+
+None of these has a key by default; give them one in
+[Configuration](#configuration).
 
 ## Configuration
 
@@ -193,11 +199,17 @@ require("tada").setup({
     toggle_box = "<C-Space>",
     cycle_status = "<Space>",
     clear_marker = "<C-H>",
-    prefix = "<C-T>", -- for the fold and archive keys
+    pane = "<LocalLeader>td", -- works in any buffer
 
-    pane = "<LocalLeader>td",
-    pick = "<LocalLeader>tp",
-    archived = "<LocalLeader>ta",
+    -- these have no key until you give them one
+    pick = false, -- works in any buffer
+    archived = false,
+    archive_entry = false,
+    archive_selection = false, -- in visual mode
+    archive_plan = false,
+    levels = false, -- "<C-q>" gives <C-q>1 to <C-q>3, and <C-q>0 to show everything
+    open_topic = false,
+    close_topic = false,
   },
 
   colors = {
@@ -214,11 +226,11 @@ require("tada").setup({
 })
 ```
 
-Set any key to `false` to turn it off. The other keys can be set the same way:
-`continue`, `open_below`, `open_above`, `indent_more`, `indent_less`,
-`start_topic`, `start_note`, `start_metadata`, `toggle_fold`, `previous_topic`,
-`next_topic`, `previous_parent_topic`, `next_parent_topic`, `follow_link`,
-`archive` and `archive_plan`.
+Set a key to `false` to turn it off, or to a list to put the action on several
+keys. The remaining keys can be set the same way: `continue`, `open_below`,
+`open_above`, `indent_more`, `indent_less`, `start_topic`, `start_note`,
+`start_metadata`, `toggle_fold`, `previous_topic`, `next_topic`,
+`previous_parent_topic`, `next_parent_topic` and `follow_link`.
 
 A color is a hex string or the name of a highlight group to follow, such as
 `"Comment"`.

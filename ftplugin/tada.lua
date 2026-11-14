@@ -16,9 +16,10 @@ vim.wo[0][0].fillchars = "fold: "
 
 local keys = Keys.configured()
 
+-- An action can sit on one key, on several, or on none
 local function map(modes, key, desc, action)
-  if key then
-    vim.keymap.set(modes, key, action, { buffer = true, desc = desc })
+  for _, lhs in ipairs(type(key) == "table" and key or { key or nil }) do
+    vim.keymap.set(modes, lhs, action, { buffer = true, desc = desc })
   end
 end
 
@@ -68,33 +69,35 @@ ask("n", "previous_parent_topic", "Go to the topic one level up")
 ask("n", "next_parent_topic", "Go to the next topic one level up")
 ask("n", "follow_link", "Open what a link points to")
 
-local function under_prefix(key)
-  return keys.prefix and key and keys.prefix .. key
+map("n", keys.open_topic, "Open the topic under the cursor, and those inside it", "zO")
+map("n", keys.close_topic, "Close the topic around the cursor", "zc")
+
+if keys.levels then
+  map("n", keys.levels .. "0", "Show everything", function()
+    Plan.current():show_everything()
+  end)
+
+  for level = 1, Outline.levels do
+    map("n", keys.levels .. level, "Show topics down to level " .. level, function()
+      Plan.current():show_topics_to(level)
+    end)
+  end
 end
 
-map("n", under_prefix(keys.archive), "Archive this entry and everything under it", function()
-  Plan.current():under_cursor():archive()
+map("n", keys.archive_entry, "Archive this entry and everything under it", function()
+  require("tada").archive()
 end)
-map("x", under_prefix(keys.archive), "Archive the lines selected", function()
+map("x", keys.archive_selection, "Archive the lines selected", function()
   local selection = Plan.current():selected()
   vim.cmd.normal({ vim.keycode("<Esc>"), bang = true })
   selection:archive()
 end)
-map("n", under_prefix(keys.archive_plan), "Archive the whole plan", function()
+map("n", keys.archive_plan, "Archive the whole plan", function()
   require("tada").archive_plan()
 end)
-
-map("n", under_prefix("o"), "Open the topics around the cursor", "zO")
-map("n", under_prefix("c"), "Close the topic around the cursor", "zc")
-map("n", under_prefix("0"), "Show everything", function()
-  Plan.current():show_everything()
+map("n", keys.archived, "Pick an archived plan", function()
+  require("tada").archived()
 end)
-
-for level = 1, Outline.levels do
-  map("n", under_prefix(level), "Show topics down to level " .. level, function()
-    Plan.current():show_topics_to(level)
-  end)
-end
 
 -- A plan started from the picker has no folder until it is first written
 vim.api.nvim_create_autocmd("BufWritePre", {

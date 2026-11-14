@@ -74,6 +74,7 @@ describe("the plan pane", function()
     helpers.write_plan(dir .. "/.tada/errands.tada", { "- Shop:" }, 5)
     helpers.write_plan(dir .. "/.tada/garden.tada", { "- Dig:" }, 1)
     helpers.choose("errands")
+    require("tada").setup({ keys = { pick = "\\tp" } })
 
     helpers.press("\\tp")
 
@@ -84,16 +85,19 @@ describe("the plan pane", function()
     helpers.write_plan(dir .. "/.tada/errands.tada", { "- Shop:" })
     helpers.choose("New plan…")
     helpers.answer("garden")
+    require("tada").setup({ keys = { pick = "\\tp" } })
 
     helpers.press("\\tp")
 
     assert.equals("garden.tada", shown())
   end)
 
-  it("offers archived plans apart from the live ones", function()
+  it("offers archived plans apart from the live ones, from a key given inside a plan", function()
+    require("tada").setup({ keys = { archived = "\\ta" } })
     helpers.write_plan(dir .. "/.tada/errands.tada", { "- Shop:" })
     helpers.write_plan(dir .. "/.tada/archive/moving.tada", { "- Pack:" })
     helpers.choose("moving")
+    helpers.press("\\td")
 
     helpers.press("\\ta")
 

@@ -1,5 +1,5 @@
 -- The key each action is on. setup({ keys = { ... } }) moves an action to
--- another key, or turns it off with false.
+-- another key, gives it several with a list, or turns it off with false.
 local config = require("tada.config")
 
 local Keys = {}
@@ -8,7 +8,6 @@ local defaults = {
   toggle_box = "<C-Space>",
   cycle_status = "<Space>",
   clear_marker = "<C-H>",
-  prefix = "<C-T>",
 
   continue = "<CR>",
   open_below = "o",
@@ -26,14 +25,19 @@ local defaults = {
   next_parent_topic = "}",
   follow_link = "gf",
 
-  -- under the prefix
-  archive = "a",
-  archive_plan = "A",
-
-  -- everywhere, not only in a plan
+  -- The one key that works everywhere, not only in a plan
   pane = "<LocalLeader>td",
-  pick = "<LocalLeader>tp",
-  archived = "<LocalLeader>ta",
+
+  -- No key until given one. Vim's own zM, zR, zm, zr, zO and zc fold a plan,
+  -- and :Tada has a subcommand for each of the rest.
+  levels = false, -- the key before a level: "<C-q>" gives <C-q>1 to <C-q>3, and <C-q>0 to show everything
+  open_topic = false,
+  close_topic = false,
+  archive_entry = false,
+  archive_selection = false, -- in visual mode
+  archive_plan = false,
+  archived = false,
+  pick = false, -- works everywhere, like pane
 }
 
 function Keys.configured()

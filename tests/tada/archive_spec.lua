@@ -1,11 +1,13 @@
 local assert = require("luassert")
 local helpers = require("tests.helpers")
 
-describe("archiving", function()
+describe("archiving, with keys given for it", function()
   local dir, plan, archived
 
   before_each(function()
-    require("tada").setup({})
+    require("tada").setup({
+      keys = { archive_entry = "<C-T>a", archive_selection = "<C-T>a", archive_plan = "<C-T>A" },
+    })
     dir = helpers.workspace()
     plan = dir .. "/.tada/errands.tada"
     archived = dir .. "/.tada/archive/errands.tada"

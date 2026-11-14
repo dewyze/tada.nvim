@@ -146,13 +146,14 @@ function M.map_keys()
   local actions = {
     pane = "Open or close the plan pane",
     pick = "Pick a plan",
-    archived = "Pick an archived plan",
   }
 
   for action, desc in pairs(actions) do
-    if keys[action] then
-      vim.keymap.set("n", keys[action], M[action], { desc = desc })
-      table.insert(M.mapped, keys[action])
+    local key = keys[action]
+
+    for _, lhs in ipairs(type(key) == "table" and key or { key or nil }) do
+      vim.keymap.set("n", lhs, M[action], { desc = desc })
+      table.insert(M.mapped, lhs)
     end
   end
 end

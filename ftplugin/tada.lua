@@ -22,9 +22,25 @@ local function map(modes, key, desc, action)
   end
 end
 
+-- While a completion menu is open with a name chosen, these keys belong to it
+local in_menu = { continue = "<C-Y>", indent_more = "<C-N>", indent_less = "<C-P>" }
+
+local function menu_key(action)
+  local menu = vim.fn.complete_info({ "pum_visible", "selected" })
+  local choosing = action ~= "continue" or menu.selected ~= -1
+
+  return menu.pum_visible == 1 and choosing and in_menu[action]
+end
+
 -- Each of these keys asks the entry under the cursor to do one thing
 local function ask(modes, action, desc)
   map(modes, keys[action], desc, function()
+    local key = menu_key(action)
+
+    if key then
+      return vim.api.nvim_feedkeys(vim.keycode(key), "ni", false)
+    end
+
     local entry = Plan.current():under_cursor()
     entry[action](entry)
   end)
@@ -85,5 +101,17 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   buffer = 0,
   callback = function(event)
     vim.fn.mkdir(vim.fs.dirname(event.match), "p")
+  end,
+})
+
+-- Offer names while typing assignees, without choosing one until asked
+pcall(function()
+  vim.bo.completeopt = "menuone,noselect"
+end)
+
+vim.api.nvim_create_autocmd("TextChangedI", {
+  buffer = 0,
+  callback = function()
+    Plan.current():under_cursor():suggest()
   end,
 })

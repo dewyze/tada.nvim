@@ -96,6 +96,11 @@ function Entry:archive()
   self.plan:selection(self.row, self:last_row()):archive()
 end
 
+-- After each change while typing: only a line of assignees has names to offer
+function Entry:suggest() end
+
+function Entry:add_names_to(_) end
+
 -- Enter in normal mode: only a topic folds
 function Entry:toggle_fold()
   self:type("<CR>")

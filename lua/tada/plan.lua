@@ -70,7 +70,7 @@ end
 -- The folder that paths in this plan are written from: the one holding
 -- .tada/, or else the plan's own
 function Plan:root()
-  local beside = vim.fs.dirname(self.path)
+  local beside = self.path ~= "" and vim.fs.dirname(self.path) or vim.fn.getcwd()
   local directory = vim.fs.find(".tada", { path = beside, upward = true, type = "directory" })[1]
 
   return directory and vim.fs.dirname(directory) or beside
@@ -83,6 +83,20 @@ end
 -- The plan of the same name in the archive, where this plan's finished work goes
 function Plan:archived_twin()
   return self:planbook():archive():plan_named(self:name())
+end
+
+-- Collect the names on this plan's assignee lines, as it stands in its buffer
+function Plan:add_assignees_to(names)
+  for row = 1, self:last_row() do
+    self:entry_at(row):add_names_to(names)
+  end
+end
+
+-- The same from the file on disk, without opening a buffer for it
+function Plan:add_saved_assignees_to(names)
+  for _, line in ipairs(self:exists() and vim.fn.readfile(self.path) or {}) do
+    Plan.read(line):add_names_to(names)
+  end
 end
 
 function Plan:under_cursor()

@@ -39,6 +39,17 @@ function Planbook:plan_named(name)
   return Plan.at(vim.fs.joinpath(self:directory(), name .. ".tada"))
 end
 
+-- Every name assigned anywhere in the live plans, as a set
+function Planbook:assignees()
+  local names = {}
+
+  for _, plan in ipairs(self:plans()) do
+    plan:add_saved_assignees_to(names)
+  end
+
+  return names
+end
+
 function Planbook:archive()
   return require("tada.archive").of(self)
 end

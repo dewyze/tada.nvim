@@ -97,7 +97,9 @@ A metadata line is `| <sigil>:<value>`.
 | `$` | End date |
 | `?` | Status |
 
-Links can be followed with `gf`. The other sigils are highlighted and
+Links can be followed with `gf`. While you type after `@:`, a menu offers the
+names already assigned anywhere in the project's plans; `<Tab>` moves through
+it and `<CR>` takes the chosen name. The other sigils are highlighted and
 otherwise do nothing yet.
 
 ## Keys
@@ -179,6 +181,8 @@ Everything is optional. These are the defaults:
 ```lua
 require("tada").setup({
   style = "unicode", -- or "ascii", "simple", "markdown"
+
+  assignees = {}, -- names to offer after @:, besides the ones already in your plans
 
   pane = {
     side = "right", -- or "left", "top", "bottom"

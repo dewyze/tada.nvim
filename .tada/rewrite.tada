@@ -29,7 +29,7 @@
     - [✔] { } jump between parent topics
     - [✔] Jump from a & link to file:line
   - Metadata:
-    - [ ] @: completes assignees from a list
+    - [✔] @: completes assignees from a list
   - Keys:
     - [✔] Move a key or turn it off
 - Folds:

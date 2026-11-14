@@ -9,6 +9,7 @@ return {
   require("tada.list_item"),
   require("tada.note"),
   require("tada.link"),
+  require("tada.assignees"),
   require("tada.metadata"),
   require("tada.comment"),
   require("tada.blank"),

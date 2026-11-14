@@ -49,6 +49,12 @@ describe("highlighting", function()
     assert.equals("", helpers.highlight(11))
   end)
 
+  it("has no sigil for status", function()
+    helpers.plan({ "- Shop:", "  | ?:done" })
+
+    assert.equals("", helpers.highlight(2))
+  end)
+
   it("names a custom status's group after the status", function()
     require("tada").setup({ statuses = { { name = "planned", symbol = " " }, { name = "doing", symbol = "🛠️" } } })
     helpers.plan({ "- [🛠️] paint" })

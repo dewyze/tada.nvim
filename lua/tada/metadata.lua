@@ -4,7 +4,6 @@ local Entry = require("tada.entry")
 local Metadata = Entry.extend()
 
 Metadata.sigils = {
-  ["?"] = "status",
   ["@"] = "assignees",
   ["^"] = "start_date",
   ["$"] = "end_date",

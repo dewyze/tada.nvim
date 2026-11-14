@@ -92,7 +92,6 @@ A metadata line is `| <sigil>:<value>`.
 | `#` | Tags |
 | `^` | Start date |
 | `$` | End date |
-| `?` | Status |
 
 Links can be followed with `gf`. While you type after `@:`, a menu offers the
 names already assigned anywhere in the project's plans; `<Tab>` moves through

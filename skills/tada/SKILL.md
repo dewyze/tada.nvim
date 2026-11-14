@@ -49,7 +49,7 @@ for glancing at. If it reads like a document, it has stopped doing its job.
 - A **note** is `> text`, hung under the text of the entry it belongs to.
 - **Metadata** is `| sigil:value`, on the lines right after its topic's title
   and lined up with the title's text: `&` link, `@` assignees,
-  `!` priority, `#` tags, `^` start date, `$` end date, `?` status. A link can be
+  `!` priority, `#` tags, `^` start date, `$` end date. A link can be
   a web address or `path/to/file.rb:42`.
 - A plain `- text` is a list item, for things that aren't work to tick off.
 - `# text` is a comment.

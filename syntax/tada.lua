@@ -15,7 +15,7 @@ local title = [[-\s\+\zs\%(\[.\{-}\]\s\)\@!.\+\ze:$]]
 
 match("tadaComment", [[^\s*#.*$]])
 match("tadaNote", [[^\s*>.*$]])
-match("tadaMetadata", [[^\s*|\s*[@^$&#!?]:.*$]])
+match("tadaMetadata", [[^\s*|\s*[@^$&#!]:.*$]])
 
 for level = 1, Outline.levels do
   match("tadaTopic" .. level, [[^\s\{]] .. (level - 1) * #Outline.step .. "}" .. title)

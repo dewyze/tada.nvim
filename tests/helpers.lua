@@ -55,6 +55,7 @@ function M.choose(label)
   M.offered = {}
   vim.ui.select = function(items, options, on_choice)
     local format = options.format_item or tostring
+    M.asked = options.prompt
     local chosen
 
     for _, item in ipairs(items) do

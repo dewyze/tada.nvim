@@ -12,6 +12,7 @@ describe("archiving", function()
   end)
 
   after_each(function()
+    helpers.restore_ui()
     helpers.cleanup(dir)
   end)
 
@@ -86,9 +87,10 @@ describe("archiving", function()
     assert.equals("  - [ ] tea", helpers.line())
   end)
 
-  it("moves the whole plan with <C-T>A and removes it", function()
+  it("moves the whole plan with <C-T>A and removes it, once confirmed", function()
     helpers.write(plan, { "> Weekend", "- Shop:", "  - [✔] milk" })
     helpers.open(plan)
+    helpers.choose("Archive")
 
     helpers.press("<C-T>A")
 
@@ -96,5 +98,25 @@ describe("archiving", function()
       { false, { "> Weekend", "- Shop:", "  - [✔] milk" } },
       { helpers.exists(plan), helpers.read(archived) }
     )
+  end)
+
+  it("names the plan when it asks", function()
+    helpers.write(plan, { "- Shop:" })
+    helpers.open(plan)
+    helpers.choose("Cancel")
+
+    helpers.press("<C-T>A")
+
+    assert.equals("Archive all of errands and remove the plan?", helpers.asked)
+  end)
+
+  it("leaves the plan alone when the whole-plan archive is cancelled", function()
+    helpers.write(plan, { "- Shop:", "  - [✔] milk" })
+    helpers.open(plan)
+    helpers.choose("Cancel")
+
+    helpers.press("<C-T>A")
+
+    assert.same({ { "- Shop:", "  - [✔] milk" }, false }, { helpers.read(plan), helpers.exists(archived) })
   end)
 end)

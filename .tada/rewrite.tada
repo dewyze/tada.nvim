@@ -50,6 +50,9 @@
     - [✔] Archive a whole plan
     - [✔] Archive selected lines
           > Appends to the same-named file in archive/
+    - [✔] Confirm before archiving a whole plan
+  - Commands:
+    - [✔] :Tada does what the keys do
 - LLM:
   - Skill:
     - [ ] Reads and writes plans

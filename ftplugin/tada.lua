@@ -65,7 +65,7 @@ map("x", under_prefix(keys.archive), "Archive the lines selected", function()
   selection:archive()
 end)
 map("n", under_prefix(keys.archive_plan), "Archive the whole plan", function()
-  Plan.current():archive()
+  require("tada").archive_plan()
 end)
 
 map("n", under_prefix("o"), "Open the topics around the cursor", "zO")

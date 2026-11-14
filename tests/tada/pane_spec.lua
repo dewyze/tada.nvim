@@ -27,6 +27,16 @@ describe("the plan pane", function()
     assert.same({ "garden.tada", 2, true }, { shown(), vim.fn.winnr("$"), vim.fn.winnr() == vim.fn.winnr("$") })
   end)
 
+  it("finds plans in a folder that 'wildignore' would skip", function()
+    helpers.write_plan(dir .. "/.tada/errands.tada", { "- Shop:" })
+    vim.o.wildignore = "*.tada,*/.tada/*"
+
+    helpers.press("\\td")
+    vim.o.wildignore = ""
+
+    assert.equals("errands.tada", shown())
+  end)
+
   it("is a third of the screen wide, up to 60 columns", function()
     helpers.write_plan(dir .. "/.tada/errands.tada", { "- Shop:" })
 

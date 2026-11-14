@@ -27,6 +27,17 @@ describe("folds", function()
     assert.same({ { "❯ Shop: 2[ ], 1[✔]", "❯ Home: 1[•]" }, "" }, { helpers.shown(), vim.fn.maparg("<C-T>1", "n") })
   end)
 
+  it("folds a plan even when folding is switched off everywhere else", function()
+    vim.o.foldenable = false
+    helpers.plan(shopping)
+
+    helpers.go_to(2)
+    helpers.press("<CR>")
+    vim.o.foldenable = true
+
+    assert.equals("  ❯ Food: 1[ ], 1[✔]", helpers.shown()[2])
+  end)
+
   it("<C-T>1 shows only the top topics, with their todos counted", function()
     helpers.press("<C-T>1")
 

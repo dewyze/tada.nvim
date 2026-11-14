@@ -29,7 +29,8 @@ end
 
 -- The plans in a folder, the one edited last first
 function Plan.all_in(directory)
-  local plans = vim.tbl_map(Plan.at, vim.fn.glob(directory .. "/*.tada", false, true))
+  -- true: look past 'wildignore', which often hides folders such as tmp/
+  local plans = vim.tbl_map(Plan.at, vim.fn.glob(directory .. "/*.tada", true, true))
 
   return Plan.latest_first(plans)
 end

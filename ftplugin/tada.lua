@@ -11,6 +11,7 @@ vim.bo.commentstring = "# %s"
 vim.wo[0][0].foldmethod = "expr"
 vim.wo[0][0].foldexpr = "v:lua.require'tada.folds'.level()"
 vim.wo[0][0].foldtext = "v:lua.require'tada.folds'.text()"
+vim.wo[0][0].foldenable = true
 vim.wo[0][0].foldlevel = Outline.levels
 vim.wo[0][0].fillchars = "fold: "
 

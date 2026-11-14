@@ -38,7 +38,7 @@ stays short enough to take in at a glance.
 
 ## Installation
 
-Requires Neovim 0.10 or later. With [lazy.nvim](https://github.com/folke/lazy.nvim):
+Requires Neovim 0.11 or later. With [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 { "dewyze/vim-tada" }

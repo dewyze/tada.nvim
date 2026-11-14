@@ -47,6 +47,16 @@ describe("keys", function()
     assert.equals("- [✔] milk", helpers.line())
   end)
 
+  it("act at once, without waiting on a longer mapping of your own", function()
+    require("tada").setup({})
+    vim.keymap.set("n", "<CR><CR>", "i<CR><Esc>")
+    helpers.plan({ "- Shop:", "  - [ ] milk" })
+
+    assert.equals(1, vim.fn.maparg("<CR>", "n", false, true).nowait)
+
+    vim.keymap.del("n", "<CR><CR>")
+  end)
+
   it("claim only the pane key outside of plans by default", function()
     require("tada").setup({})
 

@@ -19,7 +19,8 @@ local keys = Keys.configured()
 -- An action can sit on one key, on several, or on none
 local function map(modes, key, desc, action)
   for _, lhs in ipairs(type(key) == "table" and key or { key or nil }) do
-    vim.keymap.set(modes, lhs, action, { buffer = true, desc = desc })
+    -- nowait: a longer mapping of the user's own, such as <CR><CR>, must not delay these
+    vim.keymap.set(modes, lhs, action, { buffer = true, nowait = true, desc = desc })
   end
 end
 

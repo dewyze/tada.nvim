@@ -17,4 +17,12 @@ function Blank:toggle_box()
   self:become(require("tada.placeholder").boxed(self.indent))
 end
 
+function Blank:fold_level()
+  return "="
+end
+
+function Blank:closes()
+  return false
+end
+
 return Blank

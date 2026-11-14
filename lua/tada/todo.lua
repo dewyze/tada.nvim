@@ -30,4 +30,8 @@ function Todo:successor()
   return require("tada.placeholder").boxed(self.indent)
 end
 
+function Todo:add_to(tally)
+  tally:count(self.status)
+end
+
 return Todo

@@ -3,7 +3,7 @@
   - Lines:
     - [ ] Topics, todos, list items, notes, comments
     - [ ] Metadata sigils
-    - [ ] Topics nest 3 deep
+    - [✔] Topics nest 3 deep
     - [ ] Optional header: one note, links
   - Todos:
     - [ ] Four styles: unicode, ascii, simple, markdown
@@ -31,11 +31,11 @@
   - Metadata:
     - [ ] @: completes assignees from a list
 - Folds:
-  - [ ] Enter folds a topic
-  - [ ] <C-T>1-3 fold to a level
-  - [ ] <C-T>0 opens all
-  - [ ] <C-T>o/c open or close under cursor
-  - [ ] Fold text shows todo counts
+  - [✔] Enter folds a topic
+  - [✔] <C-T>1-3 fold to a level
+  - [✔] <C-T>0 opens all
+  - [✔] <C-T>o/c open or close under cursor
+  - [✔] Fold text shows todo counts
 - Plans:
   - Folder:
     - [ ] Plans live in .tada/

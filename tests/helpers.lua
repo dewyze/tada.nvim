@@ -40,6 +40,30 @@ function M.line()
   return vim.api.nvim_get_current_line()
 end
 
+-- What the window shows: a closed fold appears as its one line of fold text
+function M.shown()
+  local shown, row = {}, 1
+
+  while row <= vim.fn.line("$") do
+    if vim.fn.foldclosed(row) == -1 then
+      table.insert(shown, vim.fn.getline(row))
+      row = row + 1
+    else
+      table.insert(shown, vim.fn.foldtextresult(row))
+      row = vim.fn.foldclosedend(row) + 1
+    end
+  end
+
+  return shown
+end
+
+-- The name of the highlight on the first character of a line's text
+function M.highlight(row)
+  local col = vim.fn.indent(row) + 1
+
+  return vim.fn.synIDattr(vim.fn.synID(row, col, 1), "name")
+end
+
 -- The text from the cursor to the end of the line
 function M.after_cursor()
   local col = vim.api.nvim_win_get_cursor(0)[2]

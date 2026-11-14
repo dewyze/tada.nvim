@@ -51,10 +51,21 @@ function Statuses.new(definitions)
   return statuses
 end
 
+local configured, configured_from
+
 function Statuses.configured()
   local options = config.options
 
-  return Statuses.new(options.statuses or styles[options.style or "unicode"])
+  if configured_from ~= options then
+    configured = Statuses.new(options.statuses or styles[options.style or "unicode"])
+    configured_from = options
+  end
+
+  return configured
+end
+
+function Statuses:each()
+  return ipairs(self.list)
 end
 
 function Statuses:first()

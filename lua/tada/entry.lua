@@ -65,6 +65,32 @@ function Entry:clear_marker()
   self:put_cursor(self.row, #blanks)
 end
 
+-- Enter in normal mode: only a topic folds
+function Entry:toggle_fold()
+  self:type("<CR>")
+end
+
+-- How many topics deep this entry sits; topics nest at most three deep
+function Entry:fold_level()
+  return math.min(self:depth(), 3)
+end
+
+-- What a closed fold starting here shows
+function Entry:summary()
+  return self:render()
+end
+
+function Entry:depth()
+  return #self.indent / 2
+end
+
+-- Whether this entry sits outside a topic that started above it
+function Entry:closes(topic)
+  return #self.indent <= #topic.indent
+end
+
+function Entry:add_to(tally) end
+
 -- The entry Enter and o leave below this one
 function Entry:successor()
   return require("tada.blank").new(self.indent)

@@ -24,4 +24,8 @@ function Metadata:owner()
   return self:above():owner()
 end
 
+function Metadata:fold_level()
+  return "="
+end
+
 return Metadata

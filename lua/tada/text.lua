@@ -18,4 +18,8 @@ function Text:toggle_box()
   self:become(require("tada.todo").new(self.indent, Statuses.configured():first(), self.text))
 end
 
+function Text:fold_level()
+  return "="
+end
+
 return Text

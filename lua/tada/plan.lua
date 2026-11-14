@@ -28,6 +28,16 @@ function Plan:entry_at(row)
   end
 end
 
+function Plan:last_row()
+  return vim.api.nvim_buf_line_count(self.buffer)
+end
+
+-- Close every topic below the given depth; 0 opens them all
+function Plan:show_topics_to(depth)
+  vim.wo.foldlevel = depth == 0 and 3 or depth - 1
+  vim.cmd("normal! zX")
+end
+
 function Plan:rewrite(row, line)
   vim.api.nvim_buf_set_lines(self.buffer, row - 1, row, false, { line })
 end

@@ -24,4 +24,8 @@ function Note:owner()
   return self:above():owner()
 end
 
+function Note:fold_level()
+  return "="
+end
+
 return Note

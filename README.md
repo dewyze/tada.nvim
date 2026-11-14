@@ -1,4 +1,4 @@
-# Vim Tada
+# tada.nvim
 
 Turn your todos :white_check_mark: into tadas :tada:.
 
@@ -41,16 +41,13 @@ stays short enough to take in at a glance.
 Requires Neovim 0.11 or later. With [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
-{ "dewyze/vim-tada" }
+{ "dewyze/tada.nvim" }
 ```
 
 Calling `setup` is optional; see [Configuration](#configuration).
 
-The earlier Vimscript version, which also runs in Vim, ends at commit `625ad42`:
-
-```vim
-Plug 'dewyze/vim-tada', { 'commit': '625ad42' }
-```
+This began as [vim-tada](https://github.com/dewyze/vim-tada), a Vimscript
+plugin that also runs in Vim. That repository is archived and still works.
 
 ## Format
 
@@ -256,7 +253,7 @@ steps, short phrases, and long notes kept out of the plan in `.tada/context/`.
 To install it, link it into your skills folder:
 
 ```
-ln -s /path/to/vim-tada/skills/tada ~/.claude/skills/tada
+ln -s /path/to/tada.nvim/skills/tada ~/.claude/skills/tada
 ```
 
 ## Contributing

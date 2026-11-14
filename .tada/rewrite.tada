@@ -67,6 +67,6 @@
     - [⚑] Size test for a draft?
           > A rule of thumb in the skill, not a check
 - Release:
-  - [⚑] 1.0.0 tag pins the Vimscript version
-        > Removed; no 1.0.0 until this has been used
+  - [⚑] Tag to pin the Vimscript version
+        > No need: it stays in the vim-tada repo
   - [✔] README covers the Lua version

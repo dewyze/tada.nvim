@@ -25,9 +25,9 @@
     - [✔] : | > convert an empty line
     - [✔] <C-H> clears left of cursor
   - Movement:
-    - [ ] ( ) jump between topics
-    - [ ] { } jump between parent topics
-    - [ ] Jump from a & link to file:line
+    - [✔] ( ) jump between topics
+    - [✔] { } jump between parent topics
+    - [✔] Jump from a & link to file:line
   - Metadata:
     - [ ] @: completes assignees from a list
   - Keys:

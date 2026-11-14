@@ -7,8 +7,9 @@ local Outline = require("tada.outline")
 local Entry = {}
 Entry.__index = Entry
 
-function Entry.extend()
-  local kind = setmetatable({}, { __index = Entry })
+-- A new kind, inheriting from Entry or from a kind that already extends it
+function Entry.extend(base)
+  local kind = setmetatable({}, { __index = base or Entry })
   kind.__index = kind
   return kind
 end
@@ -67,6 +68,29 @@ function Entry:clear_marker()
   self:put_cursor(self.row, #blanks)
 end
 
+-- ( and ): the topics at this level or above it
+function Entry:previous_topic()
+  self:go_to(self.plan:topic_before(self.row, self:topic_depth()))
+end
+
+function Entry:next_topic()
+  self:go_to(self.plan:topic_after(self.row, self:topic_depth()))
+end
+
+-- { and }: the topics one level up
+function Entry:previous_parent_topic()
+  self:go_to(self.plan:topic_before(self.row, self:parent_depth()))
+end
+
+function Entry:next_parent_topic()
+  self:go_to(self.plan:topic_after(self.row, self:parent_depth()))
+end
+
+-- gf: only a link has somewhere to go
+function Entry:follow_link()
+  self:type("gf")
+end
+
 -- Enter in normal mode: only a topic folds
 function Entry:toggle_fold()
   self:type("<CR>")
@@ -84,6 +108,15 @@ end
 
 function Entry:depth()
   return #self.indent / #Outline.step
+end
+
+-- The depth of the topic this entry sits in
+function Entry:topic_depth()
+  return math.max(self:depth() - 1, 0)
+end
+
+function Entry:is_topic_within(_)
+  return false
 end
 
 -- Whether this entry sits outside a topic that started above it
@@ -127,6 +160,16 @@ function Entry:become(other)
 end
 
 -- private
+
+function Entry:parent_depth()
+  return math.max(self:topic_depth() - 1, 0)
+end
+
+function Entry:go_to(topic)
+  if topic then
+    self:put_cursor(topic.row, #topic:prefix())
+  end
+end
 
 function Entry:type(keys)
   local codes = vim.api.nvim_replace_termcodes(keys, true, false, true)

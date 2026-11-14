@@ -8,6 +8,7 @@ return {
   require("tada.topic"),
   require("tada.list_item"),
   require("tada.note"),
+  require("tada.link"),
   require("tada.metadata"),
   require("tada.comment"),
   require("tada.blank"),

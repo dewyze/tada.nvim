@@ -19,6 +19,12 @@ local defaults = {
   start_note = ">",
   start_metadata = "|",
   toggle_fold = "<CR>",
+
+  previous_topic = "(",
+  next_topic = ")",
+  previous_parent_topic = "{",
+  next_parent_topic = "}",
+  follow_link = "gf",
 }
 
 function Keys.configured()

@@ -29,6 +29,24 @@ function Plan:entry_at(row)
   end
 end
 
+-- The nearest topic below a row that is no deeper than the given depth
+function Plan:topic_after(row, depth)
+  return self:topic_between(row + 1, self:last_row(), depth)
+end
+
+function Plan:topic_before(row, depth)
+  return self:topic_between(row - 1, 1, depth)
+end
+
+-- The folder that paths in this plan are written from: the one holding
+-- .tada/, or else the plan's own
+function Plan:root()
+  local beside = vim.fs.dirname(vim.api.nvim_buf_get_name(self.buffer))
+  local planbook = vim.fs.find(".tada", { path = beside, upward = true, type = "directory" })[1]
+
+  return planbook and vim.fs.dirname(planbook) or beside
+end
+
 function Plan:last_row()
   return vim.api.nvim_buf_line_count(self.buffer)
 end
@@ -50,6 +68,18 @@ end
 
 function Plan:insert(row, line)
   vim.api.nvim_buf_set_lines(self.buffer, row - 1, row - 1, false, { line })
+end
+
+-- private
+
+function Plan:topic_between(from, to, depth)
+  for row = from, to, from <= to and 1 or -1 do
+    local entry = self:entry_at(row)
+
+    if entry:is_topic_within(depth) then
+      return entry
+    end
+  end
 end
 
 return Plan

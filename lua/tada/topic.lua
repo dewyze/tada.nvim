@@ -33,6 +33,14 @@ function Topic:predecessor()
   return require("tada.placeholder").bulleted(self.indent)
 end
 
+function Topic:topic_depth()
+  return self:depth()
+end
+
+function Topic:is_topic_within(depth)
+  return self:depth() <= depth
+end
+
 function Topic:toggle_fold()
   vim.cmd("normal! za")
 end

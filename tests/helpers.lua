@@ -12,6 +12,26 @@ function M.cleanup(path)
   end
 end
 
+-- Write a file, making the directories above it
+function M.write(path, lines)
+  vim.fn.mkdir(vim.fs.dirname(path), "p")
+  vim.fn.writefile(lines, path)
+end
+
+function M.read(path)
+  return vim.fn.readfile(path)
+end
+
+-- Open a file as the user would, cursor on the first line
+function M.open(path)
+  vim.cmd.edit(path)
+  vim.api.nvim_win_set_cursor(0, { 1, 0 })
+end
+
+function M.row()
+  return vim.api.nvim_win_get_cursor(0)[1]
+end
+
 -- Open a fresh tada buffer holding the given lines, cursor on the first
 function M.plan(lines)
   vim.cmd("enew!")

@@ -46,6 +46,12 @@ ask("i", "clear_marker", "Blank out everything left of the cursor")
 
 ask("n", "toggle_fold", "Open or close a topic")
 
+ask("n", "previous_topic", "Go to the topic before")
+ask("n", "next_topic", "Go to the next topic")
+ask("n", "previous_parent_topic", "Go to the topic one level up")
+ask("n", "next_parent_topic", "Go to the next topic one level up")
+ask("n", "follow_link", "Open what a link points to")
+
 local function under_prefix(key)
   return keys.prefix and keys.prefix .. key
 end
